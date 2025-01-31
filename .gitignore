@@ -2,4 +2,4 @@ gitsync
 build
 repos.txt
 gitsync
-gitsync.log
+*.log

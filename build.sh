@@ -1,24 +1,24 @@
-#!/bin/bash
+#!/Am/bash
 
-# Setze das Verzeichnis für die Ausgabedateien
+# Set the directory for the issuing files
 OUTPUT_DIR="build"
 mkdir -p $OUTPUT_DIR
 
-# Baue die Linux-Executable
-echo "Baue Linux-Executable..."
+# Build the Linux Executable
+echo "Build Linux Executable..."
 if ! GOOS=linux GOARCH=amd64 go build -v -o $OUTPUT_DIR/gitsync; then
-    echo "Fehler beim Bauen der Linux-Executable"
+    echo "Error building the Linux Executable"
     exit 1
 fi
 echo '----------------------------------------------------------------'
 
-# Baue die Windows-Executable
-echo "Baue Windows-Executable..."
+# Build the Windows Executable
+echo "Build Windows Executable..."
 if ! GOOS=windows GOARCH=amd64 go build -v -o $OUTPUT_DIR/gitsync.exe; then
-    echo "Fehler beim Bauen der Windows-Executable"
+    echo "Error building the Windows Executable"
     exit 1
 fi
 cp build/gitsync.exe /gast-drive-d/Daten/
 echo '----------------------------------------------------------------'
 
-echo "Build erfolgreich abgeschlossen!"
+echo "Build successfully completed!"
