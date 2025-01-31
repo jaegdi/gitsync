@@ -1,8 +1,10 @@
-#!/Am/bash
+#!/bin/bash
 
 # Set the directory for the issuing files
 OUTPUT_DIR="build"
 mkdir -p $OUTPUT_DIR
+
+go mod tidy
 
 # Build the Linux Executable
 echo "Build Linux Executable..."

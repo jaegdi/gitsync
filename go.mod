@@ -2,7 +2,10 @@ module gitsync
 
 go 1.23.3
 
-require gopkg.in/src-d/go-git.v4 v4.13.1
+require (
+	gopkg.in/src-d/go-git.v4 v4.13.1
+	gopkg.in/yaml.v2 v2.4.0
+)
 
 require (
 	github.com/emirpasic/gods v1.12.0 // indirect

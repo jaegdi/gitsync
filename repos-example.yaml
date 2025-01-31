@@ -1,0 +1,23 @@
+repos:
+  - vcs: bitbucket
+    type: project
+    url: https://bitbucket.mydomain.de/projects/ORG-BASE
+  - vcs: bitbucket
+    type: project
+    url: https://bitbucket.mydomain.de/projects/ORG-TOOLS
+    ignore: docker-build-xxyy
+  - vcs: bitbucket
+    type: project
+    url: https://bitbucket.mydomain.de/projects/ORG-DEPLOY
+  - vcs: bitbucket
+    type: repo
+    url: ssh://git@bitbucket.mydomain.de:7999/myproject/myrepo-java.git
+  - vcs: bitbucket
+    type: repo
+    url: ssh://git@bitbucket.mydomain.de:7999/myproject/myrepo-perl.git
+  - vcs: bitbucket
+    type: repo
+    url: ssh://git@bitbucket.mydomain.de:7999/myproject/myrepo-skripte.git
+  - vcs: github
+    type: repo
+    url: ssh://git@github.com:jaegdi/gitsync.git

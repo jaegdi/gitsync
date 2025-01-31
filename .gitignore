@@ -3,3 +3,4 @@ build
 repos.txt
 gitsync
 *.log
+repos.yaml
