@@ -9,7 +9,7 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/jaegdi/go-gitsync/utils"
+	"gitsync/utils"
 )
 
 type GitHubRepo struct {
@@ -48,7 +48,6 @@ func ProcessProject(project, baseDir string, excludeList []string, username, pas
 	defer resp.Body.Close()
 
 	if resp.StatusCode != http.StatusOK {
-		body, _ := io.ReadAll(resp.Body)
 		return fmt.Errorf("Error fetching GitHub project information: %s", resp.Status)
 	}
 
@@ -68,7 +67,8 @@ func ProcessProject(project, baseDir string, excludeList []string, username, pas
 			continue
 		}
 		repoURL := fmt.Sprintf("https://github.com/%s/%s.git", user, repo.Name)
-		err := utils.CloneOrPullRepo(repoURL, filepath.Join(baseDir, user), "", "", username, password)
+		projectName := utils.ExtractProjectFromURL(repoURL)
+		err := utils.CloneOrPullRepo(repoURL, filepath.Join(baseDir, projectName), "", "", username, password)
 		if err != nil {
 			return fmt.Errorf("Error cloning or pulling repository: %v", err)
 		}

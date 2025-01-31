@@ -9,7 +9,7 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/jaegdi/go-gitsync/utils"
+	"gitsync/utils"
 )
 
 type BitbucketRepo struct {
@@ -50,7 +50,6 @@ func ProcessProject(project, baseDir string, excludeList []string, username, pas
 	defer resp.Body.Close()
 
 	if resp.StatusCode != http.StatusOK {
-		body, _ := io.ReadAll(resp.Body)
 		return fmt.Errorf("Error fetching Bitbucket project information: %s", resp.Status)
 	}
 

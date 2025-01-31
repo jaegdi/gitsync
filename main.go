@@ -8,9 +8,10 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/jaegdi/go-gitsync/bitbucket"
-	"github.com/jaegdi/go-gitsync/github"
-	"github.com/jaegdi/go-gitsync/utils"
+	"gitsync/bitbucket"
+	"gitsync/github"
+	"gitsync/utils"
+
 	"gopkg.in/yaml.v2"
 )
 

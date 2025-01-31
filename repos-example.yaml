@@ -20,4 +20,6 @@ repos:
     url: ssh://git@bitbucket.mydomain.de:7999/myproject/myrepo-skripte.git
   - vcs: github
     type: repo
-    url: ssh://git@github.com:jaegdi/gitsync.git
+    url: https://github.com/jaegdi/gitsync.git
+    user: jaegdi
+    password: <Ihr_GitHub_Personal_Access_Token> or a command to get the password or 'ask' to ask for the password
