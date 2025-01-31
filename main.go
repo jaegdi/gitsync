@@ -29,17 +29,17 @@ type Config struct {
 }
 
 var (
-	configFileName *string
-	baseDir        *string
-	username       *string
-	password       *string
-	passwordFile   *string
+	repoListName *string
+	baseDir      *string
+	username     *string
+	password     *string
+	passwordFile *string
 )
 
 func init() {
 	// Define flags for the file name, base directory, and authentication
-	configFileName = flag.String("file", "repos.yaml", "The name of the yaml file with the repo list")
-	baseDir = flag.String("base", ".", "The base directory for all clones")
+	repoListName = flag.String("repolist", "repos.yaml", "The name of the yaml file with the repo list")
+	baseDir = flag.String("basedir", ".", "The base directory for all clones")
 	username = flag.String("username", "", "The username for the API")
 	password = flag.String("password", "", "The default password for the API of the git server, for different password per repo insert them in the yaml repo-list")
 	passwordFile = flag.String("passwordfile", "", "The path to a file containing the default password for the api of the git server")
@@ -76,7 +76,7 @@ func init() {
 
 func main() {
 	// Open file
-	file, err := os.Open(*configFileName)
+	file, err := os.Open(*repoListName)
 	if err != nil {
 		log.Println("Error opening file:", err)
 		fmt.Fprintln(os.Stderr, "Error opening file:", err)
