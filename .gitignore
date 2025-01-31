@@ -4,3 +4,4 @@ repos.txt
 gitsync
 *.log
 repos.yaml
+run.sh
