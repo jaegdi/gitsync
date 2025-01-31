@@ -18,18 +18,22 @@ import (
 	"gopkg.in/src-d/go-git.v4/plumbing/transport/ssh"
 )
 
+// ExtractProjectFromURL extracts the project name from a URL
 func ExtractProjectFromURL(rawURL string) string {
 	fmt.Println("Extracting project from URL:", rawURL)
 	u, err := url.Parse(rawURL)
 	if err != nil {
 		return "unknown"
 	}
+	// Extract subdomain from host
 	parts := strings.Split(u.Host, ".")
 	if len(parts) < 2 {
 		return "unknown"
 	}
 	subdomain := parts[0]
 	fmt.Println("Subdomain:", subdomain)
+
+	// Extract project name from path
 	pathParts := strings.Split(u.Path, "/")
 	if len(pathParts) >= 3 {
 		fmt.Println("Project Dir Name:", fmt.Sprintf("%s-%s", subdomain, pathParts[len(pathParts)-2]))
@@ -39,6 +43,7 @@ func ExtractProjectFromURL(rawURL string) string {
 	return fmt.Sprintf("%s-%s", subdomain, pathParts[0])
 }
 
+// CloneOrPullRepo clones or pulls a repository
 func CloneOrPullRepo(url, dir, repoUser, repoPassword, username, password string) error {
 	var auth transport.AuthMethod
 
@@ -63,12 +68,13 @@ func CloneOrPullRepo(url, dir, repoUser, repoPassword, username, password string
 		}
 		repoPassword = string(bytePassword)
 	}
-
+	// Set authentication method based on URL
 	if repoUser != "" && repoPassword != "" {
 		auth = &gitHttp.BasicAuth{Username: repoUser, Password: repoPassword}
 	} else if strings.HasPrefix(url, "http://") || strings.HasPrefix(url, "https://") {
 		auth = &gitHttp.BasicAuth{Username: username, Password: password} // If authentication is required
 	} else if strings.HasPrefix(url, "git@") || strings.HasPrefix(url, "ssh://") {
+		// Load SSH key if URL is SSH
 		usr, err := user.Current()
 		if err != nil {
 			return fmt.Errorf("Error determining user directory: %v", err)
@@ -80,14 +86,14 @@ func CloneOrPullRepo(url, dir, repoUser, repoPassword, username, password string
 		}
 		auth = sshAuth
 	}
-
+	// Clone or pull repository
 	cloneDir := filepath.Join(dir, filepath.Base(url))
 	logFile, err := os.OpenFile("gitsync.log", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0666)
 	if err != nil {
 		return fmt.Errorf("Error opening log file: %v", err)
 	}
 	defer logFile.Close()
-
+	// Clone repository if it doesn't exist or pull it if it does
 	if _, err := os.Stat(cloneDir); os.IsNotExist(err) {
 		// Clone repository
 		fmt.Println("\nCloning repository:", url)
@@ -122,6 +128,7 @@ func CloneOrPullRepo(url, dir, repoUser, repoPassword, username, password string
 	}
 }
 
+// Contains checks if a string slice contains a substring
 func Contains(slice []string, item string) bool {
 	for _, s := range slice {
 		if strings.Contains(item, s) {

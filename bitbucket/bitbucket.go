@@ -16,10 +16,12 @@ type BitbucketRepo struct {
 	Slug string `json:"slug"`
 }
 
+// BitbucketResponse represents the response from the Bitbucket API
 type BitbucketResponse struct {
 	Values []BitbucketRepo `json:"values"`
 }
 
+// ProcessProject processes a Bitbucket project
 func ProcessProject(project, baseDir string, excludeList []string, username, password string) error {
 	// Extract the base URL of the Bitbucket instance
 	u, err := url.Parse(project)
@@ -35,35 +37,35 @@ func ProcessProject(project, baseDir string, excludeList []string, username, pas
 	}
 	workspace := parts[2]
 
+	// Fetch the repositories in the workspace
 	url := fmt.Sprintf("%s/%s/repos", apiBaseURL, workspace)
 	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
 		return fmt.Errorf("Error creating request: %v", err)
 	}
 	req.SetBasicAuth(username, password)
-
+	// Send the request
 	client := &http.Client{}
 	resp, err := client.Do(req)
 	if err != nil {
 		return fmt.Errorf("Error fetching Bitbucket project information: %v", err)
 	}
 	defer resp.Body.Close()
-
 	if resp.StatusCode != http.StatusOK {
 		return fmt.Errorf("Error fetching Bitbucket project information: %s", resp.Status)
 	}
-
+	// Read the response body
 	body, err := io.ReadAll(resp.Body)
 	if err != nil {
 		return fmt.Errorf("Error reading response: %v", err)
 	}
-
+	// Parse the response
 	var bitbucketResponse BitbucketResponse
 	err = json.Unmarshal(body, &bitbucketResponse)
 	if err != nil {
 		return fmt.Errorf("Error parsing response: %v", err)
 	}
-
+	// Clone or pull each repository
 	for _, repo := range bitbucketResponse.Values {
 		if utils.Contains(excludeList, repo.Slug) {
 			continue

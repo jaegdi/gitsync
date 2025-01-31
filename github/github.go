@@ -16,8 +16,10 @@ type GitHubRepo struct {
 	Name string `json:"name"`
 }
 
+// GitHubResponse represents the response from the GitHub API
 type GitHubResponse []GitHubRepo
 
+// ProcessProject processes a GitHub project
 func ProcessProject(project, baseDir string, excludeList []string, username, password string) error {
 	// Extract the base URL of the GitHub instance
 	u, err := url.Parse(project)
@@ -40,6 +42,7 @@ func ProcessProject(project, baseDir string, excludeList []string, username, pas
 	}
 	req.SetBasicAuth(username, password)
 
+	// Send the request
 	client := &http.Client{}
 	resp, err := client.Do(req)
 	if err != nil {
@@ -50,24 +53,27 @@ func ProcessProject(project, baseDir string, excludeList []string, username, pas
 	if resp.StatusCode != http.StatusOK {
 		return fmt.Errorf("Error fetching GitHub project information: %s", resp.Status)
 	}
-
+	// Read the response body
 	body, err := io.ReadAll(resp.Body)
 	if err != nil {
 		return fmt.Errorf("Error reading response: %v", err)
 	}
-
+	//
 	var githubResponse GitHubResponse
 	err = json.Unmarshal(body, &githubResponse)
 	if err != nil {
 		return fmt.Errorf("Error parsing response: %v", err)
 	}
-
+	// Clone or pull each repository
 	for _, repo := range githubResponse {
+		// Skip repositories in the exclude list
 		if utils.Contains(excludeList, repo.Name) {
 			continue
 		}
 		repoURL := fmt.Sprintf("https://github.com/%s/%s.git", user, repo.Name)
+		// Extract the project name from the URL
 		projectName := utils.ExtractProjectFromURL(repoURL)
+		// Clone or pull the repository
 		err := utils.CloneOrPullRepo(repoURL, filepath.Join(baseDir, projectName), "", "", username, password)
 		if err != nil {
 			return fmt.Errorf("Error cloning or pulling repository: %v", err)

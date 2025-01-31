@@ -16,12 +16,12 @@ import (
 )
 
 type Repo struct {
-	VCS      string `yaml:"vcs"`
-	Type     string `yaml:"type"`
-	URL      string `yaml:"url"`
-	Ignore   string `yaml:"ignore,omitempty"`
-	User     string `yaml:"user,omitempty"`
-	Password string `yaml:"password,omitempty"`
+	VCS      string   `yaml:"vcs"`                // Version Control System
+	Type     string   `yaml:"type"`               // Type of repo (project or repo)
+	URL      string   `yaml:"url"`                // URL of the repo
+	Ignore   []string `yaml:"ignore,omitempty"`   // List of directories to ignore
+	User     string   `yaml:"user,omitempty"`     // Username for the API
+	Password string   `yaml:"password,omitempty"` // Password for the API, can be a command to get the password or 'ask' to get it interactive
 }
 
 type Config struct {
@@ -29,20 +29,20 @@ type Config struct {
 }
 
 var (
-	fileName     *string
-	baseDir      *string
-	username     *string
-	password     *string
-	passwordFile *string
+	configFileName *string
+	baseDir        *string
+	username       *string
+	password       *string
+	passwordFile   *string
 )
 
 func init() {
 	// Define flags for the file name, base directory, and authentication
-	fileName = flag.String("file", "repos.yaml", "The name of the repository file")
+	configFileName = flag.String("file", "repos.yaml", "The name of the yaml file with the repo list")
 	baseDir = flag.String("base", ".", "The base directory for all clones")
 	username = flag.String("username", "", "The username for the API")
-	password = flag.String("password", "", "The password for the API")
-	passwordFile = flag.String("passwordfile", "", "The path to a file containing the password")
+	password = flag.String("password", "", "The default password for the API of the git server, for different password per repo insert them in the yaml repo-list")
+	passwordFile = flag.String("passwordfile", "", "The path to a file containing the default password for the api of the git server")
 	flag.Parse()
 
 	// Read password from file if specified
@@ -76,7 +76,7 @@ func init() {
 
 func main() {
 	// Open file
-	file, err := os.Open(*fileName)
+	file, err := os.Open(*configFileName)
 	if err != nil {
 		log.Println("Error opening file:", err)
 		fmt.Fprintln(os.Stderr, "Error opening file:", err)
@@ -84,7 +84,7 @@ func main() {
 	}
 	defer file.Close()
 
-	// Read YAML file
+	// Read YAML config file
 	var config Config
 	decoder := yaml.NewDecoder(file)
 	if err := decoder.Decode(&config); err != nil {
@@ -95,9 +95,8 @@ func main() {
 
 	// Process each repository
 	for _, repo := range config.Repos {
-		excludeList := []string{}
-		if repo.Ignore != "" {
-			excludeList = strings.Split(repo.Ignore, ",")
+		excludeList := repo.Ignore
+		if len(excludeList) > 0 {
 			fmt.Println("Exclude list:", excludeList)
 		}
 		if repo.VCS == "bitbucket" {
@@ -145,6 +144,7 @@ func main() {
 					fmt.Fprintln(os.Stderr, "Error cloning or pulling GitHub repository:", err)
 				}
 			} else {
+				// Unknown repo type
 				log.Println("Unknown type in file:", repo.Type)
 				fmt.Fprintln(os.Stderr, "Unknown type in file:", repo.Type)
 			}
