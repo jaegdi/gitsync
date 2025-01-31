@@ -103,8 +103,8 @@ func main() {
 		if repo.VCS == "bitbucket" {
 			if repo.Type == "project" {
 				// Process Bitbucket project
-				log.Println("\nProcessing Bitbucket project:", repo.URL)
-				fmt.Println("\nProcessing Bitbucket project:", repo.URL)
+				log.Println("\n-----------------------------------\nProcessing Bitbucket project:", repo.URL)
+				fmt.Println("\n-----------------------------------\nProcessing Bitbucket project:", repo.URL)
 				err := bitbucket.ProcessProject(repo.URL, *baseDir, excludeList, *username, *password)
 				if err != nil {
 					log.Println("Error processing Bitbucket project:", err)
