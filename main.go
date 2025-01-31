@@ -8,9 +8,8 @@ import (
 	"path/filepath"
 	"strings"
 
-	"gitsync/bitbucket"
-	"gitsync/github"
 	"gitsync/utils"
+	"gitsync/vcs"
 
 	"gopkg.in/yaml.v2"
 )
@@ -22,6 +21,8 @@ type Repo struct {
 	Ignore   []string `yaml:"ignore,omitempty"`   // optional List of directories to ignore
 	User     string   `yaml:"user,omitempty"`     // optionale Username for the API, if differs from default username
 	Password string   `yaml:"password,omitempty"` // Password for the API if differs from default password, can be a command to get the password or 'ask' to get it interactive
+	Branch   string   `yaml:"branch,omitempty"`   // optional Branch to checkout
+	Tag      string   `yaml:"tag,omitempty"`      // optional Tag to checkout
 }
 
 type Config struct {
@@ -99,58 +100,29 @@ func main() {
 		if len(excludeList) > 0 {
 			fmt.Println("Exclude list:", excludeList)
 		}
-		if repo.VCS == "bitbucket" {
-			if repo.Type == "project" {
-				// Process Bitbucket project
-				log.Println("\n-----------------------------------\nProcessing Bitbucket project:", repo.URL)
-				fmt.Println("\n-----------------------------------\nProcessing Bitbucket project:", repo.URL)
-				err := bitbucket.ProcessProject(repo.URL, *baseDir, excludeList, *username, *password)
-				if err != nil {
-					log.Println("Error processing Bitbucket project:", err)
-					fmt.Fprintln(os.Stderr, "Error processing Bitbucket project:", err)
-				}
-			} else if repo.Type == "repo" {
-				// Clone or pull Bitbucket repository
-				log.Println("\nCloning or pulling Bitbucket repository:", repo.URL)
-				fmt.Println("\nCloning or pulling Bitbucket repository:", repo.URL)
-				project := utils.ExtractProjectFromURL(repo.URL)
-				err := utils.CloneOrPullRepo(repo.URL, filepath.Join(*baseDir, project), repo.User, repo.Password, *username, *password)
-				if err != nil {
-					log.Println("Error cloning or pulling Bitbucket repository:", err)
-					fmt.Fprintln(os.Stderr, "Error cloning or pulling Bitbucket repository:", err)
-				}
-			} else {
-				log.Println("Unknown type in file:", repo.Type)
-				fmt.Fprintln(os.Stderr, "Unknown type in file:", repo.Type)
+		if repo.Type == "project" {
+			// Process project
+			log.Println("\n-----------------------------------\nProcessing project:", repo.URL)
+			fmt.Println("\n-----------------------------------\nProcessing project:", repo.URL)
+			err := vcs.ProcessProject(repo.VCS, repo.URL, *baseDir, excludeList, *username, *password, repo.Branch, repo.Tag)
+			if err != nil {
+				log.Println("Error processing project:", err)
+				fmt.Fprintln(os.Stderr, "Error processing project:", err)
 			}
-		} else if repo.VCS == "github" {
-			if repo.Type == "project" {
-				// Process GitHub project
-				log.Println("\nProcessing GitHub project:", repo.URL)
-				fmt.Println("\nProcessing GitHub project:", repo.URL)
-				err := github.ProcessProject(repo.URL, *baseDir, excludeList, *username, *password)
-				if err != nil {
-					log.Println("Error processing GitHub project:", err)
-					fmt.Fprintln(os.Stderr, "Error processing GitHub project:", err)
-				}
-			} else if repo.Type == "repo" {
-				// Clone or pull GitHub repository
-				log.Println("\nCloning or pulling GitHub repository:", repo.URL)
-				fmt.Println("\nCloning or pulling GitHub repository:", repo.URL)
-				project := utils.ExtractProjectFromURL(repo.URL)
-				err := utils.CloneOrPullRepo(repo.URL, filepath.Join(*baseDir, project), repo.User, repo.Password, *username, *password)
-				if err != nil {
-					log.Println("Error cloning or pulling GitHub repository:", err)
-					fmt.Fprintln(os.Stderr, "Error cloning or pulling GitHub repository:", err)
-				}
-			} else {
-				// Unknown repo type
-				log.Println("Unknown type in file:", repo.Type)
-				fmt.Fprintln(os.Stderr, "Unknown type in file:", repo.Type)
+			fmt.Println("\n-----------------------------------")
+		} else if repo.Type == "repo" {
+			// Clone or pull repository
+			log.Println("\nCloning or pulling repository:", repo.URL)
+			fmt.Println("\nCloning or pulling repository:", repo.URL)
+			project := utils.ExtractProjectFromURL(repo.URL)
+			err := utils.CloneOrPullRepo(repo.URL, filepath.Join(*baseDir, project), repo.User, repo.Password, *username, *password, repo.Branch, repo.Tag)
+			if err != nil {
+				log.Println("Error cloning or pulling repository:", err)
+				fmt.Fprintln(os.Stderr, "Error cloning or pulling repository:", err)
 			}
 		} else {
-			log.Println("Unknown VCS in file:", repo.VCS)
-			fmt.Fprintln(os.Stderr, "Unknown VCS in file:", repo.VCS)
+			log.Println("Unknown type in file:", repo.Type)
+			fmt.Fprintln(os.Stderr, "Unknown type in file:", repo.Type)
 		}
 	}
 }
