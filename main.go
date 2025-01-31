@@ -19,9 +19,9 @@ type Repo struct {
 	VCS      string   `yaml:"vcs"`                // Version Control System
 	Type     string   `yaml:"type"`               // Type of repo (project or repo)
 	URL      string   `yaml:"url"`                // URL of the repo
-	Ignore   []string `yaml:"ignore,omitempty"`   // List of directories to ignore
-	User     string   `yaml:"user,omitempty"`     // Username for the API
-	Password string   `yaml:"password,omitempty"` // Password for the API, can be a command to get the password or 'ask' to get it interactive
+	Ignore   []string `yaml:"ignore,omitempty"`   // optional List of directories to ignore
+	User     string   `yaml:"user,omitempty"`     // optionale Username for the API, if differs from default username
+	Password string   `yaml:"password,omitempty"` // Password for the API if differs from default password, can be a command to get the password or 'ask' to get it interactive
 }
 
 type Config struct {
