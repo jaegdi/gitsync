@@ -1,0 +1,11 @@
+p https://bitbucket.mydomain.de/projects/ORG-BASE
+p https://bitbucket.mydomain.de/projects/ORG-AS
+p https://bitbucket.mydomain.de/projects/ORG-TOOLS i docker-build-fa
+p https://bitbucket.mydomain.de/projects/ORG-DEPLOY
+p https://bitbucket.mydomain.de/projects/ORG-J
+p https://bitbucket.mydomain.de/projects/ORG-IN
+r ssh://git@bitbucket.mydomain.de:7999/myproject/myrepo-java.git
+r ssh://git@bitbucket.mydomain.de:7999/myproject/myrepo-perl.git
+r ssh://git@bitbucket.mydomain.de:7999/myproject/myrepo-skripte.git
+r ssh://git@bitbucket.mydomain.de:7999/myproject/myrepo-testplaene.git
+r ssh://git@bitbucket.mydomain.de:7999/myproject/myrepo-testprogramme.git
