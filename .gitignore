@@ -5,3 +5,6 @@ gitsync
 *.log
 repos.yaml
 run.sh
+/go copy.mod
+/gitsync.exe
+/.vscode

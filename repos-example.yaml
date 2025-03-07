@@ -12,9 +12,13 @@ repos:
   - vcs: bitbucket
     type: repo
     url: ssh://git@bitbucket.mydomain.de:7999/myproject/myrepo-java.git
+    user: myuser
+    password: mypassword
+    branch: develop
   - vcs: bitbucket
     type: repo
     url: ssh://git@bitbucket.mydomain.de:7999/myproject/myrepo-perl.git
+    tag: v1.0.0
   - vcs: bitbucket
     type: repo
     url: ssh://git@bitbucket.mydomain.de:7999/myproject/myrepo-skripte.git

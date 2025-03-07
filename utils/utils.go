@@ -54,7 +54,7 @@ func CloneOrPullRepo(url, dir, repoUser, repoPassword, username, password, branc
 	var repo *git.Repository
 	if _, err := os.Stat(cloneDir); os.IsNotExist(err) {
 		// Clone repository
-		fmt.Println("\nCloning repository:", url)
+		fmt.Println("\nCloning repository:", url, "to", cloneDir)
 		logFile.WriteString(fmt.Sprintf("\nCloning repository: %s\n", url))
 		cloneOptions := &git.CloneOptions{
 			URL:      url,
@@ -72,7 +72,7 @@ func CloneOrPullRepo(url, dir, repoUser, repoPassword, username, password, branc
 	} else {
 		// Pull repository
 		fmt.Println("\nPulling repository:", url)
-		logFile.WriteString(fmt.Sprintf("\nPulling repository: %s\n", url))
+		logFile.WriteString(fmt.Sprintf("\nPulling repository: %s in %s\n", url, cloneDir))
 		repo, err = git.PlainOpen(cloneDir)
 		if err != nil {
 			return fmt.Errorf("Error opening repository: %v", err)
